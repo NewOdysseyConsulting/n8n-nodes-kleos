@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3E63DD"/>
+      <stop offset="1" stop-color="#14B8A6"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.28" cy="0.22" r="0.8">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="232" fill="url(#g)"/>
+  <rect width="1024" height="1024" rx="232" fill="url(#glow)"/>
+  <!-- Geometric "K": a stem and two arms with round caps -->
+  <path d="M 360 282 L 360 742" fill="none" stroke="#FFFFFF" stroke-width="112" stroke-linecap="round"/>
+  <path d="M 620 330 L 420 520 L 640 742" fill="none" stroke="#FFFFFF" stroke-width="112" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Spark: the generative "next step" -->
+  <circle cx="742" cy="262" r="46" fill="#FFFFFF"/>
+</svg>

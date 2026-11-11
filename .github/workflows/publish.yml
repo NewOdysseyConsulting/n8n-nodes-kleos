@@ -1,0 +1,69 @@
+# Publishes n8n-nodes-kleos to npm with a provenance attestation whenever a GitHub release is published
+# (or a version tag such as 0.2.0 is pushed). n8n only verifies community nodes published this way.
+#
+# One-time setup, done by the package owner (not by this workflow):
+#
+#   Option A, trusted publishing (no long-lived secret, recommended):
+#     npmjs.com → package n8n-nodes-kleos → Settings → Publish access → Trusted Publishers → Add GitHub Actions:
+#       Repository owner: NewOdysseyConsulting   Repository name: n8n-nodes-kleos   Workflow name: publish.yml
+#     Leave NPM_TOKEN unset. The first version must exist on npm before trusted publishing can be added, so the very
+#     first publish uses option B.
+#
+#   Option B, automation token:
+#     npmjs.com → Access Tokens → Generate New Token → Granular Access Token, "Read and write", scoped to this package,
+#     bypass 2FA allowed. GitHub → repository → Settings → Secrets and variables → Actions → New repository secret:
+#       NPM_TOKEN = <the token>
+#
+# Release: bump the version in package.json (npm version minor), push the commit and tag, then publish a GitHub release
+# for that tag. Nothing is published from a developer's machine.
+
+name: Publish
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # the OIDC token that signs the provenance attestation
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Check the version matches the tag
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          VERSION="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$VERSION" ]; then
+            echo "Tag $TAG does not match package.json version $VERSION"; exit 1
+          fi
+
+      - name: Publish with provenance
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
