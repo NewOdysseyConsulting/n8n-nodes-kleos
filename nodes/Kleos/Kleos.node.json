@@ -6,12 +6,12 @@
 	"resources": {
 		"credentialDocumentation": [
 			{
-				"url": "https://github.com/getkleos/n8n-nodes-kleos#credentials"
+				"url": "https://github.com/NewOdysseyConsulting/n8n-nodes-kleos#credentials"
 			}
 		],
 		"primaryDocumentation": [
 			{
-				"url": "https://github.com/getkleos/n8n-nodes-kleos#readme"
+				"url": "https://github.com/NewOdysseyConsulting/n8n-nodes-kleos#readme"
 			}
 		]
 	}
